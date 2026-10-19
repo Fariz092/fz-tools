@@ -1,4 +1,4 @@
-const { createCanvas } = require('canvas');
+const { registerFont, createCanvas } = require('pureimage');
 const GIFEncoder = require('gifencoder');
 
 module.exports = async (req, res) => {
@@ -12,30 +12,35 @@ module.exports = async (req, res) => {
 
     const encoder = new GIFEncoder(width, height);
     encoder.start();
-    encoder.setRepeat(0);   // 0 = loop forever
-    encoder.setDelay(250);  // 250ms per frame
+    encoder.setRepeat(0);
+    encoder.setDelay(250);
     encoder.setQuality(10);
 
     const words = text.split(/\s+/);
     const totalFrames = words.length + 3;
 
+    // Pureimage butuh font yang di-register. Kita skip register font
+    // dan pakai font default jika tersedia, atau gambar manual.
+    // Untuk sementara, kita pakai font default pureimage.
+    
     // Hitung ukuran font
     let fontSize = 80;
     if (text.length > 100) fontSize = 30;
     else if (text.length > 50) fontSize = 45;
     else if (text.length > 20) fontSize = 60;
 
-    // Pre-calculate layout (sama persis kayak di web)
-    ctx.font = `700 ${fontSize}px Arial, sans-serif`;
+    ctx.font = `${fontSize}px sans-serif`;
     const lineHeight = fontSize * 0.95;
     const startX = 30;
     const maxWidth = width - (startX * 2);
 
+    // Pre-calculate layout
     const fullLines = [];
     let testLine = '';
     for (let n = 0; n < words.length; n++) {
       const t = testLine + words[n] + ' ';
-      if (ctx.measureText(t).width > maxWidth && n > 0) {
+      const metrics = ctx.measureText(t);
+      if (metrics.width > maxWidth && n > 0) {
         fullLines.push(testLine.trim());
         testLine = words[n] + ' ';
       } else {
@@ -59,20 +64,29 @@ module.exports = async (req, res) => {
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.font = `700 ${fontSize}px Arial, sans-serif`;
+      ctx.font = `${fontSize}px sans-serif`;
 
-      // Gambar teks
+      // Gambar teks (wrap manual)
+      const lines = [];
+      let line = '';
+      const vWords = visibleText.split(' ');
+      for (let n = 0; n < vWords.length; n++) {
+        const t = line + vWords[n] + ' ';
+        if (ctx.measureText(t).width > maxWidth && n > 0) {
+          lines.push(line.trim());
+          line = vWords[n] + ' ';
+        } else {
+          line = t;
+        }
+      }
+      lines.push(line.trim());
+
       let currentY = startY;
-      const visibleLines = wrapText(ctx, visibleText, startX, startY, maxWidth, lineHeight);
-      visibleLines.forEach((l, idx) => {
+      lines.forEach(l => {
         ctx.fillText(l, startX, currentY);
         currentY += lineHeight;
       });
 
-      // Efek Blur manual di Canvas
-      const imgData = ctx.getImageData(0, 0, width, height);
-      // Trik blur sederhana: timpa dengan teks semi transparan (opsional, karena gifencoder ga support ctx.filter)
-      
       encoder.addFrame(ctx);
     }
 
@@ -87,22 +101,3 @@ module.exports = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// Fungsi pembantu untuk word wrap
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(' ');
-  let line = '';
-  const lines = [];
-
-  for (let n = 0; n < words.length; n++) {
-    const testLine = line + words[n] + ' ';
-    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
-      lines.push(line.trim());
-      line = words[n] + ' ';
-    } else {
-      line = testLine;
-    }
-  }
-  lines.push(line.trim());
-  return lines;
-}
