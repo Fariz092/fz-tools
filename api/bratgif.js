@@ -1,4 +1,4 @@
-const { registerFont, createCanvas } = require('pureimage');
+const { createCanvas } = require('pureimage');
 const GIFEncoder = require('gifencoder');
 
 module.exports = async (req, res) => {
@@ -19,11 +19,6 @@ module.exports = async (req, res) => {
     const words = text.split(/\s+/);
     const totalFrames = words.length + 3;
 
-    // Pureimage butuh font yang di-register. Kita skip register font
-    // dan pakai font default jika tersedia, atau gambar manual.
-    // Untuk sementara, kita pakai font default pureimage.
-    
-    // Hitung ukuran font
     let fontSize = 80;
     if (text.length > 100) fontSize = 30;
     else if (text.length > 50) fontSize = 45;
@@ -39,8 +34,7 @@ module.exports = async (req, res) => {
     let testLine = '';
     for (let n = 0; n < words.length; n++) {
       const t = testLine + words[n] + ' ';
-      const metrics = ctx.measureText(t);
-      if (metrics.width > maxWidth && n > 0) {
+      if (ctx.measureText(t).width > maxWidth && n > 0) {
         fullLines.push(testLine.trim());
         testLine = words[n] + ' ';
       } else {
@@ -56,17 +50,15 @@ module.exports = async (req, res) => {
       const visibleCount = Math.min(i + 1, words.length);
       const visibleText = words.slice(0, visibleCount).join(' ');
 
-      // Background putih
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, width, height);
 
-      // Teks hitam
       ctx.fillStyle = '#000000';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
       ctx.font = `${fontSize}px sans-serif`;
 
-      // Gambar teks (wrap manual)
+      // Gambar teks dengan wrap
       const lines = [];
       let line = '';
       const vWords = visibleText.split(' ');
