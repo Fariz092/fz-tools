@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>QR Forge — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1>QR Forge</h1>
+<p class="tool-page__desc">QR custom warna, siap cetak. Semua digenerate lokal.</p>
+<div class="stack">
+<input id="qr-text" class="field" placeholder="https://instagram.com/username" />
+<div class="row">
+<div style="flex:1;min-width:120px;"><div class="mono muted" style="margin-bottom:6px;">WARNA</div><input id="qr-color" type="color" value="#0a0a0a" style="width:100%;height:52px;border:var(--border);cursor:pointer;background:transparent;padding:4px;" /></div>
+<div style="flex:1;min-width:120px;"><div class="mono muted" style="margin-bottom:6px;">BG</div><input id="qr-bg" type="color" value="#f4f1ea" style="width:100%;height:52px;border:var(--border);cursor:pointer;background:transparent;padding:4px;" /></div>
+</div>
+<canvas id="qr-canvas" style="width:100%;max-width:320px;aspect-ratio:1;border:var(--border);box-shadow:var(--shadow);display:block;margin:0 auto;image-rendering:pixelated;background:#fff;"></canvas>
+<button id="qr-download" class="btn btn--coral btn--full">DOWNLOAD PNG</button>
+</div>
+</div></main>
+<script src="../assets/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+const textEl=$('#qr-text'),colorEl=$('#qr-color'),bgEl=$('#qr-bg'),canvas=$('#qr-canvas');
+function renderQR(){
+QRCode.toCanvas(canvas,textEl.value.trim()||'https://fztools.local',{width:320,margin:2,color:{dark:colorEl.value,light:bgEl.value}},e=>{if(e)console.warn(e);});
+}
+[textEl,colorEl,bgEl].forEach(el=>el.addEventListener('input',renderQR));
+$('#qr-download').addEventListener('click',()=>{
+const hi=document.createElement('canvas');
+QRCode.toCanvas(hi,textEl.value.trim()||'https://fztools.local',{width:1080,margin:4,color:{dark:colorEl.value,light:bgEl.value}},e=>{
+if(e)return console.warn(e);
+downloadCanvas(hi,`fztools-qr-${Date.now()}.png`);
+});
+});
+renderQR();
+</script>
+</body>
+</html>

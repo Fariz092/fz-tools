@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gradient Mesh — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1>Gradient Mesh</h1>
+<p class="tool-page__desc">Generate background PNG 1080x1080 buat thumbnail, story, atau wallpaper.</p>
+<div class="mesh-layout" style="display:grid;gap:24px;grid-template-columns:1fr;">
+<div id="preview" style="aspect-ratio:1;border:var(--border);box-shadow:var(--shadow);background:#0a0a0a;position:relative;overflow:hidden;"></div>
+<aside class="stack">
+<div><div class="mono" style="font-weight:700;margin-bottom:8px;">PRESETS</div><div id="presets" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;"></div></div>
+<div><div class="mono" style="font-weight:700;margin-bottom:8px;">BLOBS</div><div id="blobs"></div></div>
+<button id="shuffle" class="btn btn--paper btn--full">SHUFFLE POSISI</button>
+<button id="download" class="btn btn--coral btn--full">DOWNLOAD 1080x1080</button>
+</aside>
+</div>
+</div></main>
+<script src="../assets/app.js"></script>
+<script>
+const PRESETS=[
+{name:'TIKTOK',colors:['#ff5c39','#7b61ff','#4fe3f0']},
+{name:'ACID',colors:['#d4ff3a','#0a0a0a','#ff5c39']},
+{name:'SUNSET',colors:['#ffb24b','#ff5c39','#7b61ff']},
+{name:'MINT',colors:['#4fe3f0','#d4ff3a','#f4f1ea']}
+];
+let blobs=[
+{id:1,x:30,y:40,color:'#ff5c39'},
+{id:2,x:70,y:55,color:'#7b61ff'},
+{id:3,x:50,y:20,color:'#4fe3f0'}
+];
+const preview=$('#preview'),blobsEl=$('#blobs'),presetsEl=$('#presets');
+function renderPreview(){
+preview.innerHTML='';
+blobs.forEach(b=>{
+const el=document.createElement('div');
+el.style.cssText='position:absolute;width:60%;height:60%;border-radius:50%;transform:translate(-50%,-50%);filter:blur(60px);pointer-events:none';
+el.style.left=b.x+'%';el.style.top=b.y+'%';
+el.style.background=`radial-gradient(circle, ${b.color} 0%, transparent 70%)`;
+preview.appendChild(el);
+});
+}
+function renderBlobs(){
+blobsEl.innerHTML='';
+blobs.forEach((b,i)=>{
+const row=document.createElement('div');
+row.style.cssText='display:flex;align-items:center;gap:12px;border:var(--border);background:var(--paper);padding:8px;margin-top:8px';
+const picker=document.createElement('input');
+picker.type='color';picker.value=b.color;
+picker.style.cssText='width:40px;height:40px;border:2px solid var(--ink);cursor:pointer;background:transparent;padding:0';
+const meta=document.createElement('div');
+meta.style.cssText='font-family:var(--font-mono);font-size:11px;letter-spacing:.08em';
+meta.innerHTML=`<strong>BLOB_${String(i+1).padStart(2,'0')}</strong><br><span style="color:var(--muted)">${b.color.toUpperCase()}</span>`;
+picker.addEventListener('input',e=>{b.color=e.target.value;meta.querySelector('span').textContent=b.color.toUpperCase();renderPreview();});
+row.appendChild(picker);row.appendChild(meta);
+blobsEl.appendChild(row);
+});
+}
+function renderPresets(){
+presetsEl.innerHTML='';
+PRESETS.forEach(p=>{
+const btn=document.createElement('button');
+btn.style.cssText='border:var(--border);box-shadow:var(--shadow-sm);background:var(--paper);padding:8px;cursor:pointer;text-align:left;font:inherit;color:inherit';
+const strip=document.createElement('div');
+strip.style.cssText='display:flex;height:22px;border:2px solid var(--ink);margin-bottom:4px';
+p.colors.forEach(c=>{const s=document.createElement('div');s.style.cssText='flex:1;background:'+c;strip.appendChild(s);});
+const name=document.createElement('div');
+name.style.cssText='font-family:var(--font-mono);font-size:10px;font-weight:700;letter-spacing:.08em';
+name.textContent=p.name;
+btn.appendChild(strip);btn.appendChild(name);
+btn.addEventListener('click',()=>{
+blobs=blobs.map((b,i)=>({...b,color:p.colors[i%p.colors.length],x:randomBetween(10,90),y:randomBetween(10,90)}));
+renderPreview();renderBlobs();
+});
+presetsEl.appendChild(btn);
+});
+}
+$('#shuffle').addEventListener('click',()=>{
+blobs=blobs.map(b=>({...b,x:randomBetween(5,95),y:randomBetween(5,95)}));
+renderPreview();
+});
+$('#download').addEventListener('click',()=>{
+const c=document.createElement('canvas');
+const s=1080;c.width=c.height=s;
+const ctx=c.getContext('2d');
+ctx.fillStyle='#0a0a0a';ctx.fillRect(0,0,s,s);
+ctx.filter='blur(180px)';
+blobs.forEach(b=>{
+const px=b.x/100*s,py=b.y/100*s;
+const g=ctx.createRadialGradient(px,py,0,px,py,s*.55);
+g.addColorStop(0,b.color);g.addColorStop(1,'transparent');
+ctx.fillStyle=g;ctx.fillRect(0,0,s,s);
+});
+ctx.filter='none';
+downloadCanvas(c,`fztools-mesh-${Date.now()}.png`);
+});
+renderPresets();renderPreview();renderBlobs();
+</script>
+</body>
+</html>

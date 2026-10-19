@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Bio Card — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1>Bio Card</h1>
+<p class="tool-page__desc">Kartu link-in-bio ala brutalist, export PNG buat story IG atau TikTok.</p>
+<div class="stack">
+<input id="bc-name" class="field" placeholder="Nama" value="FZTOOLS" maxlength="24" />
+<input id="bc-bio" class="field" placeholder="Bio singkat" value="Content creator · Jakarta" maxlength="48" />
+<input id="bc-handle" class="field" placeholder="@handle" value="@fztools" maxlength="24" />
+<div><div class="mono muted" style="margin-bottom:6px;">ACCENT</div><input id="bc-color" type="color" value="#d4ff3a" style="width:100%;height:52px;border:var(--border);cursor:pointer;background:transparent;padding:4px;" /></div>
+<canvas id="bc-canvas" style="width:100%;max-width:320px;aspect-ratio:1;border:var(--border);box-shadow:var(--shadow);display:block;margin:8px auto;background:#f4f1ea;"></canvas>
+<button id="bc-download" class="btn btn--coral btn--full">DOWNLOAD PNG</button>
+</div>
+</div></main>
+<script src="../assets/app.js"></script>
+<script>
+const nameEl=$('#bc-name'),bioEl=$('#bc-bio'),handleEl=$('#bc-handle'),colorEl=$('#bc-color');
+const canvas=$('#bc-canvas');const SIZE=1080;canvas.width=canvas.height=SIZE;
+function drawCard(){
+const ctx=canvas.getContext('2d');const s=SIZE;
+const accent=colorEl.value,ink='#0a0a0a',paper='#f4f1ea';
+ctx.fillStyle=ink;ctx.fillRect(0,0,s,s);
+const p=60,cx=p,cy=p,cw=s-p*2,ch=s-p*2;
+ctx.fillStyle=paper;ctx.fillRect(cx,cy,cw,ch);
+ctx.strokeStyle=ink;ctx.lineWidth=12;ctx.strokeRect(cx,cy,cw,ch);
+ctx.fillStyle=accent;const b=160;
+ctx.fillRect(cx+40,cy+40,b,b);
+ctx.strokeStyle=ink;ctx.lineWidth=10;ctx.strokeRect(cx+40,cy+40,b,b);
+ctx.fillStyle=ink;ctx.font='bold 120px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+const init=(nameEl.value.trim()[0]||'F').toUpperCase();
+ctx.fillText(init,cx+40+b/2,cy+40+b/2+6);
+ctx.textAlign='left';ctx.font='bold 88px sans-serif';
+ctx.fillText(nameEl.value.trim().slice(0,20)||'FZTOOLS',cx+40,cy+300);
+ctx.font='36px sans-serif';ctx.fillStyle='#6b6862';
+ctx.fillText(bioEl.value.trim().slice(0,40)||'content creator',cx+40,cy+370);
+const hbY=cy+ch-140;
+ctx.fillStyle=ink;ctx.fillRect(cx+40,hbY,cw-80,90);
+ctx.fillStyle=accent;ctx.font='bold 40px monospace';
+ctx.fillText(handleEl.value.trim()||'@fztools',cx+68,hbY+54);
+}
+[nameEl,bioEl,handleEl,colorEl].forEach(el=>el.addEventListener('input',drawCard));
+$('#bc-download').addEventListener('click',()=>{
+drawCard();
+downloadCanvas(canvas,`fztools-biocard-${Date.now()}.png`);
+});
+drawCard();
+</script>
+</body>
+</html>

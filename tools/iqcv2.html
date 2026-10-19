@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>IQC v2 (Reply + Foto) — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  .iqc-layout { display: grid; gap: 24px; grid-template-columns: 1fr; }
+  @media(min-width: 900px) { .iqc-layout { grid-template-columns: 1fr 340px; } }
+
+  .preview-wrap {
+    border: var(--border);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #222;
+    padding: 16px;
+  }
+
+  .story-frame {
+    width: 100%;
+    max-width: 340px;
+    aspect-ratio: 9 / 16;
+    position: relative;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .story-frame.dark { background: #0b141a; }
+  .story-frame.light { background: #efeae2; }
+
+  .bg-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .story-frame.light .overlay { background: transparent; }
+
+  .popup-stage {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    z-index: 5;
+    gap: 10px; 
+    width: 220px; 
+  }
+
+  .glass-panel {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .story-frame.light .glass-panel {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+
+  .chat-bubble-wrap {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .story-frame.dark .chat-bubble-wrap { background: rgba(32, 44, 51, 0.6); }
+  .story-frame.light .chat-bubble-wrap { background: rgba(255, 255, 255, 0.6); }
+
+  .chat-image {
+    width: 100%;
+    max-height: 160px; 
+    object-fit: cover;
+    display: block;
+    background: #000;
+    border-radius: 10px 10px 0 0; 
+  }
+
+  .chat-text-area {
+    padding: 6px 8px 20px 10px; 
+    position: relative;
+  }
+  .story-frame.dark .chat-text-area { color: #e9edef; }
+  .story-frame.light .chat-text-area { color: #111b21; }
+  
+  .chat-text {
+    font-size: 12px; 
+    line-height: 1.35;
+    word-break: break-word;
+    display: block;
+  }
+  
+  .chat-time {
+    position: absolute;
+    bottom: 5px;
+    right: 8px;
+    font-size: 9px;
+    opacity: 0.6;
+  }
+
+  .context-menu {
+    width: 100%;
+    padding: 4px 0;
+    border-radius: 12px;
+  }
+  .story-frame.dark .context-menu { background: rgba(35, 49, 56, 0.6); color: #e9edef; }
+  .story-frame.light .context-menu { background: rgba(255, 255, 255, 0.6); color: #111b21; }
+  
+  .menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px; 
+    font-size: 13px; 
+  }
+  .menu-item.red { color: #f15c6d; }
+  .menu-item svg { width: 15px; height: 15px; opacity: 0.85; flex-shrink: 0; }
+  
+  .menu-divider { height: 1px; margin: 2px 0; }
+  .story-frame.dark .menu-divider { background: rgba(255,255,255,0.1); }
+  .story-frame.light .menu-divider { background: rgba(0,0,0,0.1); }
+  
+  #in-photo { display: none; }
+</style>
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1 class="animate-up delay-1">IQC v2 (Reply + Foto)</h1>
+<p class="tool-page__desc animate-up delay-1">Bikin chat balasan pakai foto. Ukuran proporsional, efek kaca, tanpa shadow.</p>
+
+<div class="iqc-layout animate-up delay-2">
+  <div class="preview-wrap">
+    <div id="story-frame" class="story-frame dark">
+      
+      <svg id="bg-svg" class="bg-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 604" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <filter id="blur-filter" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="12" />
+          </filter>
+        </defs>
+        <g id="svg-chats" filter="url(#blur-filter)"></g>
+      </svg>
+
+      <div class="overlay"></div>
+      
+      <div class="popup-stage">
+        
+        <div class="chat-bubble-wrap glass-panel" id="chat-bubble">
+          <img id="preview-photo" class="chat-image" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='160'><rect width='100%' height='100%' fill='%23222'/><text x='50%' y='50%' fill='%23888' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='12'>UPLOAD FOTO</text></svg>" alt="Chat Image" />
+          
+          <div class="chat-text-area">
+            <span id="wa-text" class="chat-text">Tulis pesan balasan di sini...</span>
+            <span id="wa-time" class="chat-time">12.00</span>
+          </div>
+        </div>
+
+        <div class="context-menu glass-panel">
+          <div class="menu-item"><span>Beri Bintang</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="menu-item"><span>Balas</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"/></svg></div>
+          <div class="menu-item"><span>Teruskan</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14l5-5-5-5"/><path d="M20 9H9.5A5.5 5.5 0 0 0 4 14.5v0A5.5 5.5 0 0 0 9.5 20H13"/></svg></div>
+          <div class="menu-item"><span>Salin</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></div>
+          <div class="menu-item red"><span>Hapus</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div>
+          <div class="menu-divider"></div>
+          <div class="menu-item"><span>Lainnya...</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="8" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="12" r="1.5" fill="currentColor" stroke="none"/></svg></div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <aside class="stack">
+    <div>
+      <label for="in-photo" class="btn btn--paper btn--full" style="cursor:pointer;">UPLOAD FOTO</label>
+      <input id="in-photo" type="file" accept="image/*" />
+    </div>
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">PESAN BALASAN</div>
+      <textarea id="in-text" class="field" style="min-height:60px;">Tulis pesan balasan di sini...</textarea>
+    </div>
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">JAM</div>
+      <input id="in-time" class="field" value="12.00" maxlength="5" />
+    </div>
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">TEMA</div>
+      <div class="custom-select">
+        <select id="in-theme">
+          <option value="dark">IQC Dark</option>
+          <option value="light">IQC Light</option>
+        </select>
+      </div>
+    </div>
+    <button id="btn-download" class="btn btn--coral btn--full" style="margin-top:12px;">DOWNLOAD PNG</button>
+  </aside>
+</div>
+</div></main>
+
+<script src="../assets/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  const frame = document.getElementById('story-frame');
+  const svgChats = document.getElementById('svg-chats');
+  const svgBg = document.getElementById('bg-svg');
+  
+  const inPhoto = document.getElementById('in-photo');
+  const inText = document.getElementById('in-text');
+  const inTime = document.getElementById('in-time');
+  const inTheme = document.getElementById('in-theme');
+  
+  const previewPhoto = document.getElementById('preview-photo');
+  const waText = document.getElementById('wa-text');
+  const waTime = document.getElementById('wa-time');
+  const btnDl = document.getElementById('btn-download');
+
+  const DUMMY_CHATS = [
+    { side:'in',  text:'bang bangun', time:'03.20' },
+    { side:'out', text:'kenapa',      time:'03.21' },
+    { side:'in',  text:'mimpiin aku', time:'03.21' },
+    { side:'out', text:'halah',       time:'03.22' },
+    { side:'in',  text:'plis',        time:'03.22' },
+    { side:'out', text:'yawda',       time:'03.23' },
+    { side:'in',  text:'makasih',     time:'03.23' },
+    { side:'out', text:'sama-sama',   time:'03.24' },
+    { side:'in',  text:'eh tapi',     time:'03.24' },
+    { side:'out', text:'apa',         time:'03.25' },
+    { side:'in',  text:'gabisa tidur',time:'03.25' },
+    { side:'out', text:'wkwk',        time:'03.26' },
+    { side:'in',  text:'yaudah tidur', time:'03.26' },
+    { side:'out', text:'engga ah',    time:'03.27' }
+  ];
+
+  function renderBg() {
+    const isLight = frame.classList.contains('light');
+    svgBg.style.background = isLight ? '#efeae2' : '#0b141a';
+
+    let currentY = 20;
+    let svgContent = '';
+
+    DUMMY_CHATS.forEach((chat) => {
+      const charWidth = 6;
+      const paddingX = 12;
+      const paddingY = 8;
+      const textW = chat.text.length * charWidth;
+      
+      const bubbleW = Math.min(Math.max(textW + paddingX * 2 + 10, 50), 220);
+      const bubbleH = 24 + paddingY * 2;
+      
+      const x = chat.side === 'out' ? 340 - 16 - bubbleW : 16;
+
+      let bgColor, textColor, timeColor;
+      if (isLight) {
+        bgColor = chat.side === 'out' ? '#d9fdd3' : '#ffffff';
+        textColor = '#111b21';
+        timeColor = '#667781';
+      } else {
+        bgColor = chat.side === 'out' ? '#3b4a54' : '#2a3942';
+        textColor = '#e9edef';
+        timeColor = '#8696a0';
+      }
+
+      svgContent += `
+        <g transform="translate(${x}, ${currentY})">
+          <rect width="${bubbleW}" height="${bubbleH}" rx="10" fill="${bgColor}" />
+          <text x="${paddingX}" y="${paddingY + 10}" fill="${textColor}" font-family="-apple-system, sans-serif" font-size="12">${chat.text}</text>
+          <text x="${bubbleW - 8}" y="${bubbleH - 6}" fill="${timeColor}" font-family="-apple-system, sans-serif" font-size="9" text-anchor="end">${chat.time}</text>
+        </g>
+      `;
+
+      currentY += bubbleH + 8;
+    });
+
+    svgChats.innerHTML = svgContent;
+  }
+
+  function updateUI() {
+    waText.innerHTML = inText.value.replace(/\n/g, '<br>');
+    waTime.textContent = inTime.value || '00:00';
+
+    const isLight = inTheme.value === 'light';
+    frame.classList.toggle('light', isLight);
+    frame.classList.toggle('dark', !isLight);
+    
+    renderBg();
+  }
+
+  inPhoto.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      previewPhoto.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  [inText, inTime, inTheme].forEach(el => {
+    el.addEventListener('input', updateUI);
+    el.addEventListener('change', updateUI);
+  });
+
+  btnDl.addEventListener('click', async () => {
+    try {
+      btnDl.textContent = 'MEMPROSES...';
+      btnDl.disabled = true;
+
+      const canvas = await html2canvas(frame, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+      });
+
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fztools-iqcv2-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error(err);
+      alert('Gagal export.');
+    } finally {
+      btnDl.textContent = 'DOWNLOAD PNG';
+      btnDl.disabled = false;
+    }
+  });
+
+  updateUI();
+</script>
+</body>
+</html>

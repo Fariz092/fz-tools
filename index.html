@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FZTools — Tools Viral, Zero Ribet</title>
+<meta name="description" content="Kumpulan tools kekinian untuk content creator. Gratis, cepat, jalan di browser." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<!-- Header Pill -->
+<div class="nav-wrapper animate-up delay-1">
+  <header class="nav-pill">
+    <a href="index.html" class="brand">
+      <span class="brand__logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />
+        </svg>
+      </span>
+      <span class="brand__name">FZTools</span>
+    </a>
+    <div class="nav-actions">
+      <div class="profile-pic">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <button class="menu-btn" id="open-menu" aria-label="Buka menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+          <circle cx="12" cy="5" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="19" r="1.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+</div>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+<!-- Sidebar Menu -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button class="close-btn" id="close-menu" aria-label="Tutup menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="sidebar-content">
+    <a href="#tools" class="sidebar-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Semua Tools
+    </a>
+    <a href="about.html" class="sidebar-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      Tentang
+    </a>
+    <a href="faq.html" class="sidebar-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+      FAQ
+    </a>
+    <a href="security.html" class="sidebar-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Keamanan
+    </a>
+    <a href="privacy.html" class="sidebar-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Privasi
+    </a>
+    <a href="https://github.com" target="_blank" rel="noopener" class="sidebar-link">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      GitHub Repo
+    </a>
+  </div>
+</aside>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="badge mono animate-up delay-1">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z" />
+        </svg>
+        100% CLIENT-SIDE · ZERO UPLOAD
+      </div>
+
+      <h1 class="animate-up delay-1">Tools viral,<br /><span class="accent">zero ribet.</span></h1>
+
+      <p class="hero__desc animate-up delay-2">
+        Kumpulan utility buat content creator yang males install app.
+        Semua jalan di browser lo, gratis, tanpa login.
+      </p>
+
+      <div class="hero__actions animate-up delay-2">
+        <a href="#tools" class="btn btn--ink">
+          LIHAT TOOLS
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="square" />
+          </svg>
+        </a>
+        <a href="tools/brat.html" class="btn btn--coral">COBA YANG VIRAL</a>
+      </div>
+
+      <div class="stats animate-up delay-3">
+        <div class="stat">
+          <div class="stat__num">11</div>
+          <div class="stat__label">Tools</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">0</div>
+          <div class="stat__label">Upload</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">∞</div>
+          <div class="stat__label">Free</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="section">
+    <div class="container">
+      
+      <div class="section__head animate-up delay-2">
+        <h2>Pilih tool lo.</h2>
+        <span class="mono muted" id="tool-count">11 ITEMS</span>
+      </div>
+
+      <div class="search-wrapper animate-up delay-2">
+        <input type="text" id="search-input" class="field" placeholder="Cari tool (misal: brat, iqc, tiktok)..." autocomplete="off" />
+        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="M21 21l-4.3-4.3"></path>
+        </svg>
+      </div>
+
+      <div class="tools-grid animate-up delay-3" id="tools-grid"></div>
+      
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <span>FZTOOLS © 2025</span>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="about.html" style="color:inherit;text-decoration:none;">Tentang</a>
+      <a href="faq.html" style="color:inherit;text-decoration:none;">FAQ</a>
+      <a href="security.html" style="color:inherit;text-decoration:none;">Keamanan</a>
+      <a href="privacy.html" style="color:inherit;text-decoration:none;">Privasi</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Panggil app.js untuk Sidebar -->
+<script src="assets/app.js"></script>
+<script>
+  const TOOLS = [
+    {slug:'gradient-mesh', name:'Gradient Mesh', desc:'Bikin background aesthetic buat thumbnail & story.', badge:'HOT', accent:'var(--acid)'},
+    {slug:'qr-forge', name:'QR Forge', desc:'QR custom warna & logo, siap cetak.', badge:'NEW', accent:'var(--cyan)'},
+    {slug:'text-case', name:'Text Case', desc:'Convert teks ke aesthetic font TikTok instantly.', badge:'VIRAL', accent:'var(--violet)'},
+    {slug:'bio-card', name:'Bio Card', desc:'Link-in-bio ala brutalist, export PNG.', badge:'NEW', accent:'var(--coral)'},
+    {slug:'image-compress', name:'Image Squeeze', desc:'Kompres gambar di browser, no upload.', badge:'', accent:'var(--acid)'},
+    {slug:'color-palette', name:'Palette Extractor', desc:'Ambil palet warna dari gambar apapun.', badge:'', accent:'var(--coral)'},
+    {slug:'iqc-generator', name:'IQC Generator', desc:'Prank chat WA tema dark & pink. Set teks, export PNG.', badge:'BARU', accent:'var(--ink)'},
+    {slug:'brat', name:'Brat Generator', desc:'Stiker Brat teks blur. Background putih, rasio 1:1.', badge:'HOT', accent:'var(--acid)'},
+    {slug:'brat-gif', name:'Brat GIF', desc:'Stiker Brat versi animasi. Bikin teksnya bergerak.', badge:'HOT', accent:'var(--coral)'},
+    {slug:'iqcv2', name:'IQC v2 (Foto)', desc:'Prank chat balasan pakai foto. Bebas upload gambar.', badge:'BARU', accent:'var(--violet)'},
+    {slug:'tiktok-profile', name:'Fake TikTok Profile', desc:'Bikin screenshot profil TikTok palsu. Bisa upload banner & avatar.', badge:'HOT', accent:'var(--cyan)'}
+  ];
+
+  const I_BOLT = '<svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg>';
+  const I_ARROW = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="square"/></svg>';
+
+  const grid = document.getElementById('tools-grid');
+  const countEl = document.getElementById('tool-count');
+  const searchInput = document.getElementById('search-input');
+
+  function renderTools(query = '') {
+    const q = query.toLowerCase().trim();
+    const filtered = TOOLS.filter(t => 
+      t.name.toLowerCase().includes(q) || 
+      t.desc.toLowerCase().includes(q)
+    );
+
+    countEl.textContent = `${filtered.length} ITEMS`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          Tool "${query}" tidak ditemukan :(
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered.map((t, i) => `
+      <a href="tools/${t.slug}.html" class="tool-card animate-up delay-${(i % 3) + 1}">
+        ${t.badge ? `<span class="tool-card__badge" style="background:${t.accent};${t.accent.includes('violet')||t.accent.includes('ink')?'color:var(--paper);':''}">${t.badge}</span>` : ''}
+        <div class="tool-card__icon" style="background:${t.accent};${t.accent.includes('violet')||t.accent.includes('ink')?'color:var(--paper);':''}">${I_BOLT}</div>
+        <h3 class="tool-card__title">${t.name}</h3>
+        <p class="tool-card__desc">${t.desc}</p>
+        <div class="tool-card__cta"><span>OPEN</span>${I_ARROW}</div>
+      </a>
+    `).join('');
+  }
+
+  searchInput.addEventListener('input', (e) => {
+    renderTools(e.target.value);
+  });
+
+  renderTools();
+</script>
+</body>
+</html>

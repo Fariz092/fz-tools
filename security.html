@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Keamanan — FZTools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/style.css" />
+</head>
+<body>
+
+<div class="nav-wrapper animate-up delay-1">
+  <header class="nav-pill">
+    <a href="index.html" class="brand">
+      <span class="brand__logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span>
+      <span class="brand__name">FZTools</span>
+    </a>
+    <div class="nav-actions">
+      <div class="profile-pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <button class="menu-btn" id="open-menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="5" r="1.5" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="12" cy="19" r="1.5" fill="currentColor"/></svg></button>
+    </div>
+  </header>
+</div>
+
+<div class="sidebar-overlay" id="sidebar-overlay"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <button class="close-btn" id="close-menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div class="sidebar-content">
+    <a href="index.html#tools" class="sidebar-link">Semua Tools</a>
+    <a href="about.html" class="sidebar-link" >Tentang</a>
+    <a href="faq.html" class="sidebar-link" >FAQ</a>
+    <a href="security.html" class="sidebar-link" style="background: var(--acid);">Keamanan</a>
+    <a href="privacy.html" class="sidebar-link" >Privasi</a>
+  </div>
+</aside>
+
+<main class="article-container animate-up delay-2">
+  <a href="index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>KEMBALI</a>
+  
+<h1>Keamanan Data</h1>
+<p>Keamanan dan kerahasiaan data Anda adalah fondasi utama dari cara kerja FZTools.</p>
+
+<h2>Pemrosesan Sisi Klien (Client-Side)</h2>
+<p>Berbeda dengan situs web konvensional yang mengharuskan Anda mengunggah file (seperti gambar atau teks) ke server mereka untuk diproses, FZTools melakukan seluruh proses komputasi secara langsung di dalam browser perangkat Anda (client-side) menggunakan JavaScript.</p>
+<p>Artinya, file yang Anda masukkan (gambar, teks, atau data lainnya) <strong>tidak pernah dikirim, disimpan, atau diproses di server kami</strong>. File tersebut hanya berada di memori perangkat Anda dan akan hilang saat Anda menutup tab browser.</p>
+
+<h2>Bebas Risiko Kebocoran Data</h2>
+<p>Karena tidak ada data yang berpindah dari perangkat Anda ke internet, risiko peretasan server atau kebocoran data pengguna dapat diminimalisir secara signifikan. Anda memiliki kendali penuh atas privasi file Anda.</p>
+
+<h2>Koneksi Aman</h2>
+<p>Meskipun aplikasi dapat berjalan sepenuhnya secara lokal, situs web FZTools disajikan melalui protokol HTTPS yang aman untuk memastikan bahwa kode aplikasi yang Anda muat tidak dimanipulasi oleh pihak ketiga.</p>
+
+</main>
+
+<footer class="footer">
+  <div class="footer__inner">
+    <span>FZTOOLS © 2025</span>
+    <div style="display:flex;gap:16px;"><a href="about.html" style="color:inherit;text-decoration:none;">Tentang</a><a href="faq.html" style="color:inherit;text-decoration:none;">FAQ</a><a href="security.html" style="color:inherit;text-decoration:none;">Keamanan</a><a href="privacy.html" style="color:inherit;text-decoration:none;">Privasi</a></div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+
+</body>
+</html>

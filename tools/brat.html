@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Brat Generator — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  .brat-layout { display: grid; gap: 24px; grid-template-columns: 1fr; }
+  @media(min-width: 900px) { .brat-layout { grid-template-columns: 1fr 340px; } }
+  
+  .preview-wrap {
+    border: var(--border);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #222;
+    padding: 16px;
+  }
+
+  .brat-canvas-wrap {
+    width: 100%;
+    max-width: 400px;
+    aspect-ratio: 1 / 1;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    /* Teks di kiri tengah */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 30px; 
+  }
+
+  .brat-text {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 80px;
+    line-height: 0.95;
+    text-align: left; /* Rata kiri */
+    word-break: break-word;
+    filter: blur(1.5px);
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1>Brat Generator</h1>
+<p class="tool-page__desc">Bikin stiker Brat (teks blur, background putih) rasio 1:1. Posisi teks di kiri tengah.</p>
+
+<div class="brat-layout">
+  <div class="preview-wrap">
+    <div class="brat-canvas-wrap">
+      <div id="brat-display" class="brat-text">brat<br>summer</div>
+    </div>
+  </div>
+
+  <aside class="stack">
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">TEKS</div>
+      <textarea id="in-text" class="field" style="min-height:100px;">brat
+summer</textarea>
+    </div>
+    <button id="btn-download" class="btn btn--coral btn--full" style="margin-top:12px;">DOWNLOAD PNG</button>
+  </aside>
+</div>
+</div></main>
+
+<script>
+  const display = document.getElementById('brat-display');
+  const inText = document.getElementById('in-text');
+  const btnDl = document.getElementById('btn-download');
+
+  function updateUI() {
+    display.textContent = inText.value || ' ';
+    // Logika penyesuaian ukuran font untuk preview di layar
+    const len = inText.value.length;
+    if (len > 100) display.style.fontSize = '30px';
+    else if (len > 50) display.style.fontSize = '45px';
+    else if (len > 20) display.style.fontSize = '60px';
+    else display.style.fontSize = '80px';
+  }
+
+  inText.addEventListener('input', updateUI);
+
+  // Handle teks panjang untuk canvas (word wrap)
+  function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    const lines = [];
+
+    for (let n = 0; n < words.length; n++) {
+      const testLine = line + words[n] + ' ';
+      const metrics = ctx.measureText(testLine);
+      const testWidth = metrics.width;
+
+      if (testWidth > maxWidth && n > 0) {
+        lines.push(line.trim());
+        line = words[n] + ' ';
+      } else {
+        line = testLine;
+      }
+    }
+    lines.push(line.trim());
+
+    // Render ke canvas
+    let currentY = y - ((lines.length - 1) * lineHeight) / 2;
+    lines.forEach(l => {
+      ctx.fillText(l, x, currentY);
+      currentY += lineHeight;
+    });
+  }
+
+  btnDl.addEventListener('click', () => {
+    try {
+      btnDl.textContent = 'MEMPROSES...';
+      btnDl.disabled = true;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 1080;
+      canvas.height = 1080;
+      const ctx = canvas.getContext('2d');
+
+      // Background putih
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1080, 1080);
+
+      ctx.fillStyle = '#000000';
+      ctx.textAlign = 'left'; // Rata kiri
+      ctx.textBaseline = 'middle';
+      
+      const len = inText.value.length;
+      let fontSize = 220;
+      if (len > 100) fontSize = 60;
+      else if (len > 50) fontSize = 100;
+      else if (len > 20) fontSize = 160;
+      
+      ctx.font = `700 ${fontSize}px Arial, Helvetica, sans-serif`;
+      
+      // Render teks per baris (menghormati enter dari user)
+      const lines = inText.value.split('\n');
+      const lineHeight = fontSize * 0.95;
+      const totalHeight = lines.length * lineHeight;
+      let startY = (1080 - totalHeight) / 2 + lineHeight / 2;
+      
+      // Padding kiri 80px
+      const startX = 80; 
+      const maxWidth = 1080 - (startX * 2);
+
+      lines.forEach(line => {
+        wrapText(ctx, line, startX, startY, maxWidth, lineHeight);
+        startY += lineHeight;
+      });
+
+      // Efek blur
+      const temp = document.createElement('canvas');
+      temp.width = 1080;
+      temp.height = 1080;
+      const tctx = temp.getContext('2d');
+      tctx.drawImage(canvas, 0, 0);
+      
+      ctx.clearRect(0, 0, 1080, 1080);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1080, 1080);
+      ctx.filter = 'blur(4px)';
+      ctx.drawImage(temp, 0, 0);
+      ctx.filter = 'none';
+
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `brat-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error(err);
+      alert('Gagal export.');
+    } finally {
+      btnDl.textContent = 'DOWNLOAD PNG';
+      btnDl.disabled = false;
+    }
+  });
+
+  updateUI();
+</script>
+</body>
+</html>

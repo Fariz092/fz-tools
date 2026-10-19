@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Palette Extractor — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1>Palette Extractor</h1>
+<p class="tool-page__desc">Ambil 5 warna dominan dari gambar apapun. Tap swatch untuk copy hex.</p>
+<div class="stack">
+<label for="cp-file" class="btn btn--paper btn--full" style="cursor:pointer;">PILIH GAMBAR</label>
+<input id="cp-file" type="file" accept="image/*" style="display:none;" />
+<canvas id="cp-canvas" style="width:100%;max-width:320px;aspect-ratio:1;border:var(--border);box-shadow:var(--shadow);display:none;margin:0 auto;background:#fff;"></canvas>
+<div id="cp-swatches" style="display:grid;grid-template-columns:repeat(5,1fr);gap:8px;"></div>
+<div id="cp-hex-list" class="stack"></div>
+</div>
+</div></main>
+<script src="../assets/app.js"></script>
+<script>
+const fileEl=$('#cp-file'),canvas=$('#cp-canvas'),swatchesEl=$('#cp-swatches'),hexListEl=$('#cp-hex-list');
+fileEl.addEventListener('change',e=>{
+const f=e.target.files[0];if(!f)return;
+const r=new FileReader();
+r.onload=ev=>{const img=new Image();img.onload=()=>extract(img);img.src=ev.target.result;};
+r.readAsDataURL(f);
+});
+function extract(img){
+const max=200;const rt=Math.min(max/img.width,max/img.height);
+const w=Math.round(img.width*rt),h=Math.round(img.height*rt);
+canvas.width=w;canvas.height=h;canvas.style.display='block';
+const ctx=canvas.getContext('2d');
+ctx.drawImage(img,0,0,w,h);
+const data=ctx.getImageData(0,0,w,h).data;
+const buckets=new Map();
+for(let i=0;i<data.length;i+=4){
+const r=data[i],g=data[i+1],b=data[i+2],a=data[i+3];
+if(a<128)continue;
+const key=`${r>>4}_${g>>4}_${b>>4}`;
+const prev=buckets.get(key)||{r:0,g:0,b:0,count:0};
+prev.r+=r;prev.g+=g;prev.b+=b;prev.count++;
+buckets.set(key,prev);
+}
+const palette=[...buckets.values()].sort((a,b)=>b.count-a.count).slice(0,5).map(b=>{
+const r=Math.round(b.r/b.count),g=Math.round(b.g/b.count),bl=Math.round(b.b/b.count);
+return '#'+[r,g,bl].map(x=>x.toString(16).padStart(2,'0')).join('');
+});
+render(palette);
+}
+function render(palette){
+swatchesEl.innerHTML='';hexListEl.innerHTML='';
+palette.forEach(hex=>{
+const sw=document.createElement('div');
+sw.style.cssText=`aspect-ratio:1;border:var(--border);background:${hex};cursor:pointer;`;
+sw.addEventListener('click',()=>{
+navigator.clipboard.writeText(hex.toUpperCase()).catch(()=>{});
+sw.style.outline='4px solid var(--coral)';
+setTimeout(()=>{sw.style.outline='';},600);
+});
+swatchesEl.appendChild(sw);
+const row=document.createElement('button');
+row.className='panel panel--shadow';
+row.style.cssText='display:flex;align-items:center;justify-content:space-between;width:100%;font:inherit;cursor:pointer;text-align:left;';
+row.innerHTML=`<span class="mono" style="font-weight:700;">${hex.toUpperCase()}</span><span class="mono muted">TAP TO COPY</span>`;
+row.addEventListener('click',()=>{
+navigator.clipboard.writeText(hex.toUpperCase()).catch(()=>{});
+row.style.background='var(--acid)';
+setTimeout(()=>{row.style.background='';},600);
+});
+hexListEl.appendChild(row);
+});
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Fake TikTok Profile — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  .tt-layout { display: grid; gap: 24px; grid-template-columns: 1fr; }
+  @media(min-width: 900px) { .tt-layout { grid-template-columns: 1fr 340px; } }
+
+  .preview-wrap {
+    border: var(--border);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #222;
+    padding: 16px;
+  }
+
+  /* Container Utama TikTok Mockup */
+  .tt-frame {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 4 / 5;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #fff;
+    transition: background 0.3s, color 0.3s;
+  }
+  .tt-frame.light {
+    background: #fff;
+    color: #000;
+  }
+
+  /* Banner & Fade */
+  .tt-banner-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 45%;
+    z-index: 1;
+  }
+  .tt-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .tt-banner-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent 10%, #000 100%);
+  }
+  .tt-frame.light .tt-banner-fade {
+    background: linear-gradient(to bottom, transparent 10%, #fff 100%);
+  }
+
+  /* Info Section */
+  .tt-info-wrap {
+    position: absolute;
+    top: 35%;
+    left: 16px;
+    right: 16px;
+    z-index: 5;
+  }
+  
+  .tt-name-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+  .tt-name {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+  
+  /* Centang Biru TikTok */
+  .verified-badge {
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tt-username {
+    font-size: 14px;
+    color: #a1a1aa;
+    margin-bottom: 20px;
+  }
+  .tt-frame.light .tt-username { color: #71717a; }
+
+  /* Stats */
+  .tt-stats {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 20px;
+  }
+  .tt-stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .tt-stat-num {
+    font-size: 17px;
+    font-weight: 700;
+  }
+  .tt-stat-label {
+    font-size: 13px;
+    color: #a1a1aa;
+  }
+  .tt-frame.light .tt-stat-label { color: #71717a; }
+
+  /* Bio & Buttons */
+  .tt-bio {
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  
+  .tt-action-btns {
+    display: flex;
+    gap: 8px;
+  }
+  
+  /* Tombol Pill */
+  .tt-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 999px; /* Bentuk Pill */
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+  }
+  .tt-frame.light .tt-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #000;
+  }
+  
+  .tt-btn svg { width: 14px; height: 14px; fill: #fe2c55; }
+
+  /* Profile Picture */
+  .tt-profile-pic-wrap {
+    position: absolute;
+    top: 28%;
+    right: 16px;
+    z-index: 15;
+  }
+  .tt-profile-pic {
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    object-fit: cover;
+    background: #333;
+  }
+  .tt-frame.light .tt-profile-pic {
+    border-color: #fff;
+  }
+  .tt-plus-badge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    width: 26px;
+    height: 26px;
+    background: #20d5ec;
+    border-radius: 50%;
+    border: 2px solid #000;
+    display: grid;
+    place-items: center;
+  }
+  .tt-frame.light .tt-plus-badge {
+    border-color: #fff;
+  }
+  .tt-plus-badge svg { width: 14px; height: 14px; stroke: #fff; stroke-width: 3; }
+
+  #in-avatar, #in-banner { display: none; }
+</style>
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1 class="animate-up delay-1">Fake TikTok Profile</h1>
+<p class="tool-page__desc animate-up delay-1">Bikin screenshot profil TikTok palsu. Tanpa badge merah, tombol menu bergaya pill.</p>
+
+<div class="tt-layout animate-up delay-2">
+  <div class="preview-wrap">
+    
+    <!-- TikTok Frame -->
+    <div id="tt-frame" class="tt-frame">
+      
+      <!-- Banner -->
+      <div class="tt-banner-wrap">
+        <img id="tt-banner" class="tt-banner" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='200'><rect width='100%' height='100%' fill='%23111'/><text x='50%' y='50%' fill='%23444' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14'>UPLOAD BANNER</text></svg>" alt="Banner" />
+        <div class="tt-banner-fade"></div>
+      </div>
+
+      <!-- Profile Pic -->
+      <div class="tt-profile-pic-wrap">
+        <img id="tt-avatar" class="tt-profile-pic" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100%' height='100%' fill='%23222'/><circle cx='50' cy='40' r='20' fill='%23666'/><path d='M15 90c0-20 15-30 35-30s35 10 35 30' fill='%23666'/></svg>" alt="Avatar" />
+        <div class="tt-plus-badge">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke-linecap="round"/></svg>
+        </div>
+      </div>
+
+      <!-- Info Section -->
+      <div class="tt-info-wrap">
+        <div class="tt-name-row">
+          <div class="tt-name" id="tt-name">FZPEDIATOOLS</div>
+          
+          <!-- TikTok Verified Badge SVG -->
+          <svg class="verified-badge" viewBox="0 0 24 24" fill="none">
+            <path d="M12 1.5L14.8 4.2L18.6 3.5L19.2 7.3L22.4 9.4L20.6 12.7L22.4 16L19.2 18.1L18.6 21.9L14.8 21.2L12 23.9L9.2 21.2L5.4 21.9L4.8 18.1L1.6 16L3.4 12.7L1.6 9.4L4.8 7.3L5.4 3.5L9.2 4.2L12 1.5Z" fill="#20d5ec"/>
+            <path d="M8 12.5L10.5 15L16 9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        
+        <div class="tt-username" id="tt-username">@username</div>
+        
+        <div class="tt-stats">
+          <div class="tt-stat-item">
+            <span class="tt-stat-num" id="tt-following">100</span>
+            <span class="tt-stat-label">Mengikuti</span>
+          </div>
+          <div class="tt-stat-item">
+            <span class="tt-stat-num" id="tt-followers">1000</span>
+            <span class="tt-stat-label">Pengikut</span>
+          </div>
+          <div class="tt-stat-item">
+            <span class="tt-stat-num" id="tt-likes">5000</span>
+            <span class="tt-stat-label">Suka</span>
+          </div>
+        </div>
+
+        <div class="tt-bio" id="tt-bio">Bio profile Anda</div>
+        
+        <div class="tt-action-btns">
+          <button class="tt-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            TikTok Studio
+          </button>
+          <button class="tt-btn">
+            <svg viewBox="0 0 24 24"><path d="M19 6h-2c0-2.76-2.24-5-5-5S7 3.24 7 6H5c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-7-3c1.66 0 3 1.34 3 3H9c0-1.66 1.34-3 3-3zm7 17H5V8h14v12zm-7-8c-1.66 0-3-1.34-3-3H7c0 2.76 2.24 5 5 5s5-2.24 5-5h-2c0 1.66-1.34 3-3 3z"/></svg>
+            Pesanan Anda
+          </button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <aside class="stack">
+    <div class="row">
+      <label for="in-avatar" class="btn btn--paper" style="flex:1; cursor:pointer;">FOTO PROFIL</label>
+      <input id="in-avatar" type="file" accept="image/*" />
+      
+      <label for="in-banner" class="btn btn--paper" style="flex:1; cursor:pointer;">BANNER</label>
+      <input id="in-banner" type="file" accept="image/*" />
+    </div>
+
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">NAMA</div>
+      <input id="in-name" class="field" value="FZPEDIATOOLS" />
+    </div>
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">USERNAME</div>
+      <input id="in-username" class="field" value="@username" />
+    </div>
+    <div class="row">
+      <div style="flex:1;">
+        <div class="mono muted" style="margin-bottom:6px;">MENGIKUTI</div>
+        <input id="in-following" class="field" type="number" value="100" />
+      </div>
+      <div style="flex:1;">
+        <div class="mono muted" style="margin-bottom:6px;">PENGIKUT</div>
+        <input id="in-followers" class="field" type="number" value="1000" />
+      </div>
+      <div style="flex:1;">
+        <div class="mono muted" style="margin-bottom:6px;">SUKA</div>
+        <input id="in-likes" class="field" type="number" value="5000" />
+      </div>
+    </div>
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">BIO</div>
+      <input id="in-bio" class="field" value="Bio profile Anda" />
+    </div>
+    <div>
+      <div class="mono muted" style="margin-bottom:6px;">TEMA</div>
+      <div class="custom-select">
+        <select id="in-theme">
+          <option value="dark">TikTok Dark</option>
+          <option value="light">TikTok Light</option>
+        </select>
+      </div>
+    </div>
+    <button id="btn-download" class="btn btn--coral btn--full" style="margin-top:12px;">DOWNLOAD PNG</button>
+  </aside>
+</div>
+</div></main>
+
+<script src="../assets/app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script>
+  const frame = document.getElementById('tt-frame');
+  
+  const inAvatar = document.getElementById('in-avatar');
+  const inBanner = document.getElementById('in-banner');
+  const inName = document.getElementById('in-name');
+  const inUsername = document.getElementById('in-username');
+  const inFollowing = document.getElementById('in-following');
+  const inFollowers = document.getElementById('in-followers');
+  const inLikes = document.getElementById('in-likes');
+  const inBio = document.getElementById('in-bio');
+  const inTheme = document.getElementById('in-theme');
+  
+  const ttAvatar = document.getElementById('tt-avatar');
+  const ttBanner = document.getElementById('tt-banner');
+  const ttName = document.getElementById('tt-name');
+  const ttUsername = document.getElementById('tt-username');
+  const ttFollowing = document.getElementById('tt-following');
+  const ttFollowers = document.getElementById('tt-followers');
+  const ttLikes = document.getElementById('tt-likes');
+  const ttBio = document.getElementById('tt-bio');
+  const btnDl = document.getElementById('btn-download');
+
+  function updateUI() {
+    ttName.textContent = inName.value || 'Nama';
+    ttUsername.textContent = inUsername.value.startsWith('@') ? inUsername.value : '@' + inUsername.value;
+    ttFollowing.textContent = inFollowing.value || '0';
+    ttFollowers.textContent = inFollowers.value || '0';
+    ttLikes.textContent = inLikes.value || '0';
+    ttBio.textContent = inBio.value || '';
+
+    const isLight = inTheme.value === 'light';
+    frame.classList.toggle('light', isLight);
+  }
+
+  [inName, inUsername, inFollowing, inFollowers, inLikes, inBio, inTheme].forEach(el => {
+    el.addEventListener('input', updateUI);
+    el.addEventListener('change', updateUI);
+  });
+
+  inAvatar.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { ttAvatar.src = ev.target.result; };
+    reader.readAsDataURL(file);
+  });
+
+  inBanner.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { ttBanner.src = ev.target.result; };
+    reader.readAsDataURL(file);
+  });
+
+  btnDl.addEventListener('click', async () => {
+    try {
+      btnDl.textContent = 'MEMPROSES...';
+      btnDl.disabled = true;
+
+      const canvas = await html2canvas(frame, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: null,
+      });
+
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fztools-tiktok-${Date.now()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (err) {
+      console.error(err);
+      alert('Gagal export.');
+    } finally {
+      btnDl.textContent = 'DOWNLOAD PNG';
+      btnDl.disabled = false;
+    }
+  });
+
+  updateUI();
+</script>
+</body>
+</html>

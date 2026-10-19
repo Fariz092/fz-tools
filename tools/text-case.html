@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Text Case — FZTools</title>
+<link rel="stylesheet" href="../assets/style.css" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header class="nav"><div class="nav__inner">
+<a href="../index.html" class="brand"><span class="brand__logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="brand__name">FZTools</span></a>
+<nav class="nav__links"><a href="../index.html#tools">TOOLS</a></nav>
+</div></header>
+<main class="tool-page"><div class="container">
+<a href="../index.html" class="back-link"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5M11 5l-7 7 7 7"/></svg>BACK</a>
+<h1>Text Case</h1>
+<p class="tool-page__desc">Convert teks ke font aesthetic buat caption TikTok, bio IG, atau nickname game.</p>
+<textarea id="input" class="field" placeholder="Ketik teks di sini..." maxlength="200"></textarea>
+<div class="field-note"><span id="counter">0</span>/200</div>
+<div id="results" class="stack"></div>
+</div></main>
+<script src="../assets/app.js"></script>
+<script>
+const STYLES=[
+{label:'SMALL CAPS',transform:s=>s.split('').map(c=>{const lo='abcdefghijklmnopqrstuvwxyz',up='ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘqʀꜱᴛᴜᴠᴡxʏᴢ',i=lo.indexOf(c.toLowerCase());return i<0?c:up[i];}).join('')},
+{label:'FULL WIDTH',transform:s=>s.replace(/[!-~]/g,c=>String.fromCharCode(c.charCodeAt(0)+0xfee0)).replace(/ /g,'\u3000')},
+{label:'CIRCLED',transform:s=>s.split('').map(c=>{const n=c.charCodeAt(0);if(n>=65&&n<=90)return String.fromCharCode(0x24b6+n-65);if(n>=97&&n<=122)return String.fromCharCode(0x24d0+n-97);return c;}).join('')},
+{label:'INVERTED',transform:s=>s.split('').map((c,i)=>i%2===0?c.toUpperCase():c.toLowerCase()).join('')},
+{label:'MORSE',transform:s=>{const d={a:'.-',b:'-...',c:'-.-.',d:'-..',e:'.',f:'..-.',g:'--.',h:'....',i:'..',j:'.---',k:'-.-',l:'.-..',m:'--',n:'-.',o:'---',p:'.--.',q:'--.-',r:'.-.',s:'...',t:'-',u:'..-',v:'...-',w:'.--',x:'-..-',y:'-.--',z:'--..'};return s.toLowerCase().split('').map(c=>d[c]||c).join(' ');}}
+];
+const input=$('#input'),counter=$('#counter'),resultsEl=$('#results');
+function render(){
+const v=input.value;counter.textContent=v.length;resultsEl.innerHTML='';
+STYLES.forEach(st=>{
+const t=st.transform(v);
+const row=document.createElement('div');
+row.className='panel panel--shadow';
+row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:16px';
+const left=document.createElement('div');
+left.style.cssText='flex:1;min-width:0';
+const label=document.createElement('div');
+label.className='mono muted';label.style.marginBottom='4px';label.textContent=st.label;
+const out=document.createElement('div');
+out.style.cssText='font-size:16px;word-break:break-all;line-height:1.4';
+out.textContent=t||'—';if(!t)out.style.opacity='.4';
+left.appendChild(label);left.appendChild(out);
+const btn=document.createElement('button');
+btn.className='btn btn--sm btn--ink';btn.textContent='COPY';btn.disabled=!t;
+btn.addEventListener('click',()=>copyText(t,btn));
+row.appendChild(left);row.appendChild(btn);
+resultsEl.appendChild(row);
+});
+}
+input.addEventListener('input',render);render();
+</script>
+</body>
+</html>
